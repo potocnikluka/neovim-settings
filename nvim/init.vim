@@ -98,7 +98,7 @@ lua require'lspconfig'.jdtls.setup{
             \on_attach=require'completion'.on_attach
             \}
 "Install java language server with :LspInstall jdtls
-"--------------------------------------------------- AUTOFORMATE with <leader>f
+"------------------------------------------ save and AUTOFORMATE with <leader>f
 nnoremap <silent><leader>f <cmd>w<CR><cmd>lua vim.lsp.buf.formatting()<CR>
 "_________________________________________________________________ AUTOCOMPLETE
 "--------------------------------------------------- Scroll popup down with TAB
@@ -398,18 +398,28 @@ let g:loaded_matchparen=1
 "------------------------------------------------------------------------------
 "                                                                      SNIPPETS
 "==============================================================================
-"---------------------------------------------------------------- java snippets
+"----------------------------------------- match java class name with file name
 nnoremap <silent>classtofilename :let g:text=expand('%:t')
             \<CR>cw<C-r>=g:text<CR><Esc>_f.<S-d>a<space>{<ESC>
-
-nnoremap ,jav :-1read ~/.config/nvim/snippets/main.java
-            \<CR>2w:normal classtofilename<CR>jo
-nnoremap ,jas :-1read ~/.config/nvim/snippets/mainWscanner.java
+"________________________________________________________________ java snippets
+nnoremap ,jc :-1read ~/.config/nvim/snippets/java/class.java
+            \<CR>2w:normal classtofilename<CR>o<TAB>
+nnoremap ,jcm :-1read ~/.config/nvim/snippets/java/classMain.java
+            \<CR>2w:normal classtofilename<CR>jo<TAB>
+nnoremap ,jcms :-1read ~/.config/nvim/snippets/java/classMainScanner.java
             \<CR>2j2w:normal classtofilename<CR>2jo
-nnoremap ,is :-1read ~/.config/nvim/snippets/intToString.java
+nnoremap ,jm :-1read ~/.config/nvim/snippets/java/main.java
+            \<CR>o<TAB>
+nnoremap ,jis :-1read ~/.config/nvim/snippets/java/intToString.java
             \<CR>6wli
-nnoremap ,pl :-1read ~/.config/nvim/snippets/println.java
+nnoremap ,jpl :-1read ~/.config/nvim/snippets/java/println.java
             \<CR>5wli
+",jc -java class with class name matching file name
+",jcm -java class with class name matching file name + main
+",jcms -java class with class name matching file name + main + Scanner
+",jm -java main
+",jis -java int to string
+",jpl -java System.out.println()
 "==============================================================================
 "------------------------------------------------------------------------------
 "                                                                   END OF FILE
@@ -423,3 +433,4 @@ autocmd BufEnter init.vim nnoremap ,6 :/^"\s* TERMINAL<CR>zt:<BS>
 autocmd BufEnter init.vim nnoremap ,7 :/^"\s* PARENTHESES AUTOCOMPLETION<CR>zt:<BS>
 autocmd BufEnter init.vim nnoremap ,8 :/^"\s* SNIPPETS<CR>zt:<BS>
 autocmd BufEnter init.vim nnoremap ,0 gg
+

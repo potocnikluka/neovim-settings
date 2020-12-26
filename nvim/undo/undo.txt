@@ -1,1 +1,0 @@
-undo folder is meant for vim to save undos, so you can undo the changes even after restarting vim.
