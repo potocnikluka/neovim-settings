@@ -370,6 +370,17 @@ command R if g:prog_buf
             \| call Run_Program(50)
 "------------------------------- Close errorlist if it it the last oppened file
 autocmd bufenter * if (winnr("$") == 1 && &filetype=~'errorlist') | q | endif
+"_________________________________________ open curl cheat sheet in vim with Ch
+function! CheatSheet(search)
+    let l:winnr = winnr()
+    vertical new
+    vertical resize 80
+    call termopen('curl cht.sh/'.a:search.'', {"detach": 0})
+    set wrap
+    set winfixwidth
+    execute l:winnr . 'wincmd p'
+endfunction
+command! -nargs=+ -complete=command Ch call CheatSheet(<args>)
 "==============================================================================
 "------------------------------------------------------------------------------
 "                                                    PARENTHESES AUTOCOMPLETION
