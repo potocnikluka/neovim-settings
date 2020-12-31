@@ -19,12 +19,9 @@ Lately it has also been providing great features sooner than vim.
 ### Pluggins:
 These settings include a few lightweight plugins.
 
-* Implement LSP:
-   - nvim-lspconfig (https://github.com/neovim/nvim-lspconfig) - collection of common configurations for LSP.
-   - Completion-nvim (https://github.com/nvim-lua/completion-nvim) - auto completion framework for a better completion experience with LSP.
-* Other:
-   - indentLine to make it prettier (https://github.com/Yggdroot/indentLine)
-   - vim-fugitive (https://github.com/tpope/vim-fugitive) - git plugin for vim
+* nvim-lspconfig (https://github.com/neovim/nvim-lspconfig) - implement neovim's LSP with collection of common configurations.
+* Completion-nvim (https://github.com/nvim-lua/completion-nvim) - auto completion framework for a better completion experience with LSP.
+* vim-fugitive (https://github.com/tpope/vim-fugitive) - git plugin for vim
 
 ### LSP
 Nvim supports the Language Server Protocol (LSP), which means it acts as
@@ -60,6 +57,10 @@ You can easily create your own snippets with these settings:
 * Toggle terminal with F4.
 * In editor, type :R to asynchronously run the program in the side split. Toggle the terminal running the program with Shift + e, if there is no nothing running Shift - e will run the program.
 * Set up compilers and compiling paths to suit your needs in init.vim under TERMINAL AND RUNNING THE PROGRAM.
+
+* Format current file with ",f".
+* By default formating will only indent the whole file.
+* To use a specific formater, add "'filetype': 'formater'" to g:formaters dictionary in init.vim under FORMATING.
 
 * Autocompletion for parentheses, press the sign twice to insert a single sign.
 
