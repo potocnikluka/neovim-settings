@@ -4,7 +4,7 @@ My preffered linux neovim settings.
 Neovim (https://github.com/neovim/neovim) is an ambitious vim-fork, trying to modernize vim. 
 It provides better plugin API than vim, better codebase and a great community. 
 Lately it has also been providing great features sooner than vim.
-    
+
 ## Prerequisites
 * neovim v0.5
 * git
@@ -29,18 +29,22 @@ a client to LSP servers and includes a Lua framework `vim.lsp` for building
 enhanced LSP tools.
 
 * Adding language servers to LSP (look to init.vim under PLUGGINS/LSP for examples):
-   - Add the following code to init.vim:
-   ```lua require'lspconfig'.<server-name>.setup{<settings>}```
-   - To allow autocompletion from server add the following setting to the code above:
-   ```on_attach=require'completion'.on_attach```
-   - Run :LspInstall <server-name> in editor (some servers need to be installed manually)
+	- Add the following code to init.vim:
 
-See nvim-lspconfig repository for more configuration information.
+		```lua require'lspconfig'.<server-name>.setup{<settings>}```
+
+	- To allow autocompletion from server add the following setting to the code above:
+
+		```on_attach=require'completion'.on_attach```
+
+	- Run ```:LspInstall <server-name>``` in editor (some servers need to be installed manually)
+
+	  See nvim-lspconfig repository for more configuration information.
 
 
 ### Snippets
 You can easily create your own snippets with these settings:
-* Create "snippet-name.filetype" file in nvim/snippets/.
+* Create "snippet-name.filetype" file in "nvim/snippets/."
 * Add your snippet code to that file.
 * In init.vim under SNIPPETS implement the "g:snippets" dictionary with you snippet:
 
@@ -53,20 +57,20 @@ You can easily create your own snippets with these settings:
 * Added syntax highlight for basic groups
 
 * Statusline showing current mode, full file path, filetype, encoding, operating system, current column, current line, total lines, git branch and buffer number.
-   - Tabline appears if there are at least two tabs.
-   - Both statusline and tabline show + if the file has been edited.
+	- Tabline appears if there are at least two tabs.
+	- Both statusline and tabline show + if the file has been edited.
 
 * Toggle terminal with F4.
-* In editor, type :R to asynchronously run the program in the side split. Toggle the terminal running the program with Shift + e, if there is no nothing running Shift - e will run the program.
-   - Set up compilers and compiling paths to suit your needs in init.vim under TERMINAL AND RUNNING THE PROGRAM.
+* In editor, type ```:R``` to asynchronously run the program in the side split. Toggle the terminal running the program with "Shift + e", if there is no nothing running "Shift - e" will run the program.
+	- Set up compilers and compiling paths to suit your needs in init.vim under TERMINAL AND RUNNING THE PROGRAM.
 
 * Format current file with ",f".
-   - By default formating will only indent the whole file.
-   - To use a specific formater, add "'filetype': 'formater'" to g:formaters dictionary in init.vim under FORMATING.
+	- By default formating will only indent the whole file.
+	- To use a specific formater, add ```'filetype': 'formater'``` to "g:formaters" dictionary in init.vim under FORMATING.
 
 * Autocompletion for parentheses, press the sign twice to insert a single sign.
 
-* Netrw set up to perform similar to nerdtree. (Create a new file with % and directory with d, rename or move with R and delete with D)
+* Netrw set up to perform similar to nerdtree. (Create a new file with "%" and directory with "d", rename or move with "R" and delete with "D")
 
 
 
