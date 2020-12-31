@@ -40,11 +40,13 @@ See nvim-lspconfig repository for more configuration information.
 
 ### Snippets
 You can easily create your own snippets with these settings:
-   - Create snippet-name.filetype file in nvim/snippets/
-   - Add your snippet code to that file
-   - In init.vim add code following the examples under SNIPPETS:
-    ```nnoremap <your-key-mapping>:-1read ~/.config/nvim/additions/snippets/snippet-name.filetype```
-   - You can add keys to remapping to move cursor to desired location when placing the snippet
+* Create "snippet-name.filetype" file in nvim/snippets/.
+* Add your snippet code to that file.
+* In init.vim under SNIPPETS implement the "g:snippets" dictionary with you snippet:
+	let g:snippets = [
+			\['key-mapping', 'snippet-file-name', 'move-cursor-after']
+			\]
+* Type ":Snippets" to see all the availible snippets.
 
 ### OTHER
 * Colortheme: Gruvbox(https://github.com/morhetz/gruvbox)

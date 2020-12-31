@@ -34,7 +34,7 @@ set timeoutlen=400 "Shorten timeout for key combinations
 set number "Show numbers on the side
 set relativenumber "Show numbers relative to your position
 set nowrap "Do not wrap multiple lines in one line
-set cmdheight=2 "Enable more space for displaying messages
+"set cmdheight=2 "Enable more space for displaying messages
 set guicursor= "disable cursor styling
 set scrolloff=8 "minimum number of lines above or bellow cursor
 set smartcase "override ignorecase option
@@ -460,27 +460,26 @@ let g:loaded_matchparen=1
 "                                                                      SNIPPETS
 "==============================================================================
 "----------------------------------------- match java class name with file name
-nnoremap <silent>classtofilename :let g:text=expand('%:t')
-			\<CR>cw<C-r>=g:text<CR><Esc>_f.<S-d>a<space>{<ESC>
+command! CTF let g:text=expand('%:t') |
+			\normal cw<C-r>=g:text<CR><Esc>diwhx
 "________________________________________________________________ java snippets
-nnoremap ,jc :-1read ~/.config/nvim/snippets/java/class.java
-			\<CR>2w:normal classtofilename<CR>o<TAB>
-nnoremap ,jcm :-1read ~/.config/nvim/snippets/java/classMain.java
-			\<CR>2w:normal classtofilename<CR>jo<TAB>
-nnoremap ,jcms :-1read ~/.config/nvim/snippets/java/classMainScanner.java
-			\<CR>2j2w:normal classtofilename<CR>2jo
-nnoremap ,jm :-1read ~/.config/nvim/snippets/java/main.java
-			\<CR>o<TAB>
-nnoremap ,jis :-1read ~/.config/nvim/snippets/java/intToString.java
-			\<CR>6wli
-nnoremap ,jpl :-1read ~/.config/nvim/snippets/java/println.java
-			\<CR>5wli
-",jc -java class with class name matching file name
-",jcm -java class with class name matching file name + main
-",jcms -java class with class name matching file name + main + Scanner
-",jm -java main
-",jis -java int to string
-",jpl -java System.out.println()
+let g:snippets = [ 
+			\[',jm', 'main.java', 'o'],
+			\[',jis', 'intToString.java', '6wli'],
+			\[',jpl', 'println.java', '5wli'],
+			\[',jc', 'class.java', '2w:CTF<CR>o'],
+			\[',jcm', 'classMain.java', '2w:CTF<CR>jo'],
+			\[',jcms', 'classMainScanner.java', '2j2w:CTF<CR>2jo'],
+			\]
+for snippet in g:snippets  
+	execute 'nnoremap '.snippet[0].'
+				\ :-1read ~/.config/nvim/snippets/'.snippet[1].'<CR>
+				\'.snippet[2].' <esc>:echo "snippet: '.snippet[1].'"<CR>'
+endfor
+"----------------------------------- show all availible snippets with :Snippets
+command! Snippets for snippet in g:snippets |
+			\ echo ''.snippet[0].'  -->  '.snippet[1].'' |
+			\ endfor
 "==============================================================================
 "------------------------------------------------------------------------------
 "                                                                   END OF FILE
@@ -492,6 +491,6 @@ autocmd BufEnter init.vim nnoremap ,4 :/^"\s* STATUSLINE<CR>zt:<BS>
 autocmd BufEnter init.vim nnoremap ,5 :/^"\s* NETRW<CR>zt:<BS>
 autocmd BufEnter init.vim nnoremap ,6 :/^"\s* TERMINAL<CR>zt:<BS>
 autocmd BufEnter init.vim nnoremap ,7 :/^"\s* FORMATING<CR>zt:<BS>
-autocmd BufEnter init.vim nnoremap ,8 :/^"\s* PARENTHESES AUTOCOMPLETION<CR>zt:<BS>
+autocmd BufEnter init.vim nnoremap ,8 :/^"\s* PARENTHESES<CR>zt:<BS>
 autocmd BufEnter init.vim nnoremap ,9 :/^"\s* SNIPPETS<CR>zt:<BS>
 autocmd BufEnter init.vim nnoremap ,0 gg
