@@ -1,60 +1,78 @@
+"==============================================================================
+"------------------------------------------------------------------------------
+"                                                             NAVIGATE init.vim 
+"==============================================================================
+
 " Navigate init.vim file with ,{num}
 
-"BASIC BEHAVIOUR       ,1
-"PLUGGINS              ,2
-"COLORS                ,3
-"STATUSLINE            ,4
-"NETRW                 ,5
-"TERMINAL              ,6
-"FORMATING             ,7
-"PARENTHESES           ,8
-"SNIPPETS              ,9
+"BASIC BEHAVIOUR _______ ,1
+
+" - default settings
+" - mappings
+" - pluggins
+
+"UI ____________________ ,2
+
+" - default settings
+" - colortheme
+" - syntax highlighting
+" - indentline
+" - cursor line/column
+" - stuatus/tab line
+
+"TERMINAL ______________ ,3
+
+
+" - toggle terminal
+" - run program
+
+"FORMATING _____________ ,4
+
+" - default settings
+" - specific formaters
+
+"SNIPPETS ______________ ,5
+
+
+" - default settings
+" - java snippets
+
+"LSP ___________________ ,6
+
+" - language servers
+" - autocomplete
+
+"NETRW _________________ ,7
+
+" - default settings
+" - toggle netrw
+
 
 "==============================================================================
 "------------------------------------------------------------------------------
 "                                                               BASIC BEHAVIOUR
 "==============================================================================
+
+
 syntax on
 filetype plugin indent on
 set exrc
 set noerrorbells "Disable error sounds
 set noswapfile "Load buffers without creating swap files
 set updatetime=50 "Shorten updatetime from 4s to 50ms
-set shortmess+=c "Don't give ins-completion-menu messages
-set completeopt=menuone "Show completion popup with only one match
-set completeopt+=noinsert,noselect "Dont atuo insert words
 set path=.,,** "search down into subfodlers
 set wildmenu "display matching files with tab completion
 set wildignore+=**/node_modules/** "ignore searching node modules
 set wildignore+=**/.git/** "ignore searching git folders
-set splitbelow "open new buffer below in normal split
-set splitright "open new buffer on the right in vertical split
-set timeoutlen=400 "Shorten timeout for key combinations
-"--------------------------------------------------------------------------  UI
-set number "Show numbers on the side
-set relativenumber "Show numbers relative to your position
-set nowrap "Do not wrap multiple lines in one line
-"set cmdheight=2 "Enable more space for displaying messages
-set guicursor= "disable cursor styling
-set scrolloff=8 "minimum number of lines above or bellow cursor
-set smartcase "override ignorecase option
-set nohlsearch "Stop highlighting for hlsearch option
-set incsearch "Show current match while typing search pattern
-set showmatch "Briefly show the matching bracket
-set notitle  "dont show title on top
-set signcolumn=number "join error and sign column
-set noshowmode "don't show mode in cmd
-set list "show indentline
-set listchars=tab:\¦\ 
-"-------------------------------------------------------------------- INDENTING
-set tabstop=4 softtabstop=4 "set tab width
-set shiftwidth=4
-set smartindent "smart indent the new line
+set timeoutlen=500 "Shorten timeout for key combinations
 "------------------------------------------------------------------ SAVE / UNDO
 set nobackup "Do not automatically save
 set undofile "Allow undo after reoppening the file
 set undodir=~/.config/nvim/undo "undo directory
-"--------------------------------------------------------------------- MAPPINGS
+
+
+"_____________________________________________________________________ MAPPINGS
+
 "map , as the <leader> key
 let mapleader=","
 "leave insert mode with jj
@@ -66,58 +84,72 @@ inoremap <S-TAB> <C-O>
 command! Q :q
 command! W :w
 command! Wq :wq
-"==============================================================================
-"------------------------------------------------------------------------------
-"                                                                      PLUGGINS
-"==============================================================================
+"--------------------------------------------------- Parentheses autocompletion
+inoremap " ""<left>
+inoremap "" "
+inoremap ' ''<left>
+inoremap '' '
+inoremap ` ``<left>
+inoremap `` `
+inoremap ( ()<left>
+inoremap (<cr> (<cr>)<Esc>O
+inoremap (( (
+inoremap () ()
+inoremap [ []<left>
+inoremap [<cr> [<cr>]<Esc>O
+inoremap [[ [
+inoremap [] []
+inoremap { {}<left>
+inoremap {<cr> {<cr>}<Esc>O
+inoremap {{ {
+inoremap {} {}
+"--------------------------------- prevent highlight errors from delayed parens
+let g:loaded_matchparen=1
+
+
+"____________________________________________________________________ PLUGGINS
+
 call plug#begin()
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
-Plug 'tpope/vim-fugitive'
 call plug#end()
-"______________________________________________________________________ GRUVBOX
+
+
+"==============================================================================
+"------------------------------------------------------------------------------
+"                                                                            UI 
+"==============================================================================
+
+
+set number "Show numbers on the side
+set relativenumber "Show numbers relative to your position
+set nowrap "Do not wrap multiple lines in one line
+"set cmdheight=2 "Enable more space for displaying messages
+set scrolloff=8 "minimum number of lines above or bellow cursor
+set smartcase "override ignorecase option
+set nohlsearch "Stop highlighting for hlsearch option
+set splitbelow "open new buffer below in normal split
+set splitright "open new buffer on the right in vertical split
+set incsearch "Show current match while typing search pattern
+set guicursor= "disable cursor styling
+set showmatch "Briefly show the matching bracket
+set notitle  "dont show title on top
+set signcolumn=number "join error and sign column
+set noshowmode "don't show mode in cmd
+set termguicolors
+
+
+"___________________________________________________________________ COLORTHEME
+
 set background=dark
 let g:gruvbox_italics=1
 let g:gruvbox_contrast_dark='hard'
 let g:gruvbox_invert_selection='0'
 colorscheme gruvbox
-"__________________________________________________________________________ LSP
-lua require'lspconfig'.tsserver.setup{
-			\on_attach=require'completion'.on_attach
-			\}
-"Install tsserver with :LspInstall tsserver
-lua require'lspconfig'.jsonls.setup{
-			\on_attach=require'completion'.on_attach
-			\}
-"Install json language server with :LspInstall jsonls
-lua require'lspconfig'.pyls.setup{
-			\on_attach=require'completion'.on_attach
-			\}
-"Install python language server with :!pip install python-language-server
-lua require'lspconfig'.jdtls.setup{
-			\on_attach=require'completion'.on_attach
-			\}
-"Install java language server with :LspInstall jdtls
-"_________________________________________________________________ AUTOCOMPLETE
-"--------------------------------------------------- Scroll popup down with TAB
-inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<TAB>"
-"--------------------------------------------------- Scroll popup up with S-TAB
-inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<TAB>"
-"------------------------------------------------------------ Select with enter
-inoremap <expr><CR> pumvisible() ? "<C-y>" : "\<CR>"
-"---------------------------------------------------------- Completion priority
-let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-"==============================================================================
-"------------------------------------------------------------------------------
-"                                                                        COLORS 
-"==============================================================================
-set termguicolors
-"__________________________________________________________________ CURSOR LINE
-set cursorline
-"set cursorcolumn
-highlight CursorLine ctermbg=236 guibg=#292727 gui=bold cterm=bold
-"highlight Cursorcolumn ctermbg=236 guibg=#181818 gui=bold cterm=bold
+
+
 "_____________________________________________________________ SYNTAX HIGHLIGHT
+
 highlight GruvboxRed guifg=#CD5C5C
 highlight GruvboxBlue guifg=#9AB5AB
 highlight Normal guibg=#181818
@@ -152,11 +184,27 @@ autocmd Syntax *
 			\ syntax match Type '\v<\$*\u%(\w|\$)*>'
 			\ containedin=CONTAINED
 autocmd Filetype markdown\|text :set syntax=Normal
-"==============================================================================
-"------------------------------------------------------------------------------
-"                                                        STATUSLINE AND TABLINE
-"==============================================================================
-"____________________________________________________________ Show current mode
+
+
+"___________________________________________________________________ INDENTLINE
+
+set list "show indentline
+set listchars=tab:\¦\ 
+
+
+"_____________________________________________ CURSOR LINE/COLUMN, COLOR COLUMN
+
+set cursorline
+"set cursorcolumn
+"set colorcolumn=80
+highlight CursorLine ctermbg=236 guibg=#292727 gui=bold cterm=bold
+"highlight Cursorcolumn ctermbg=236 guibg=#181818 gui=bold cterm=bold
+"highlight colorcolumn guibg=#1c1c1c
+
+
+"_______________________________________________________ STATUSLINE AND TABLINE
+
+"------------------------------------------------------------ Show current mode
 let g:currentmode={
 			\ 'n'  : 'Normal',
 			\ 'no' : 'Normal·Operator Pending',
@@ -177,7 +225,7 @@ let g:currentmode={
 			\ '!'  : 'Shell',
 			\ 't'  : 'Terminal'
 			\}
-"______________________________________________________________ Show git branch
+"-------------------------------------------------------------- Show git branch
 function! GitBranch()
 	return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
 endfunction
@@ -185,7 +233,7 @@ function! StatuslineGit()
 	let l:branchname = GitBranch()
 	return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
 endfunction
-"______________________________________________________ Statusline construction
+"------------------------------------------------------ Statusline construction
 set laststatus=2
 set statusline+=%0*\ %{toupper(g:currentmode[mode()])}
 set statusline+=\ %1*\ %<%F%m%r%h%w
@@ -199,7 +247,7 @@ set statusline+=\ ln:\ %02l/%L
 set statusline+=\ %1*
 set statusline+=%{StatuslineGit()}
 set statusline+=\ %0*\ %-2n
-"_________________________________________________________ Tabline construction
+"----------------------------------------------------------Tabline construction
 set guitablabel=\ %t\ %M\ %N
 "--------------------------------------------------------- highlight statusline
 highlight statusline cterm=bold ctermbg=246 ctermfg=234
@@ -213,64 +261,16 @@ highlight statuslineNC ctermfg=239 ctermbg=239 guibg=#504945 guifg=#1d2021
 highlight TabLineSel ctermbg=243 guibg=#a89984 guifg=#3c3836
 highlight TabLine ctermfg=007 ctermbg=239 guibg=#504945 gui=NONE cterm=NONE
 highlight TabLineFill ctermfg=007 ctermbg=236 guibg=#32302f gui=NONE cterm=NONE
+
+
 "==============================================================================
 "------------------------------------------------------------------------------
-"                                                           NETRW CONFIGURATION
+"                                                                      TERMINAL
 "==============================================================================
-let g:netrw_banner = 0 "Disable directory preview press "I" to show it
-let g:netrw_liststyle = 3 "Tree appearance
-let g:netrw_browse_split = 4 "Open file on the right of the file browser
-let g:netrw_winsize = 15 "Size of netrw window
-let g:NetrwIsOpen = 0 "netrw oppened or not
-let g:netrw_altv=1 "Open slits to the right
-"___________________________________________________ TOGGLE NETRW with Ctrl - n
-function! ToggleNetrw()
-	if g:NetrwIsOpen
-		let i = bufnr("$")
-		while (i >= 1)
-			if (getbufvar(i, "&filetype") == "netrw")
-				silent exe "bwipeout " . i
-			endif
-			let i -= 1
-		endwhile
-		let g:NetrwIsOpen=0
-	else
-		let g:NetrwIsOpen=1
-		silent Lexplore
-	endif
-endfunction
-map <silent><C-n> :call ToggleNetrw()<CR>
-"____________________________________________ Toggle netrw off on opening files
-function! CloseEmptyFile()
-	if g:NetrwIsOpen
-		let i = bufnr("$")
-		while (i >= 1)
-			if (getbufvar(i, "&filetype") == "")
-				silent exe "bwipeout " . i
-			endif
-			let i -= 1
-		endwhile
-	endif
-endfunction
-augroup Netrw
-	"-------------------------------------- Open netrw when opening directories
-	autocmd VimEnter * call ToggleNetrw()
-	"-------------------------------------- Don't open netrw when opening files
-	autocmd VimEnter *.* call ToggleNetrw()
-	"------------------------------------------------- Close empty file on open
-	autocmd VimEnter * call CloseEmptyFile()
-	"---------------------------------------------- Toggle off on opening files
-	autocmd BufWinEnter *.*\|TODO\|./* if g:NetrwIsOpen
-				\ | call ToggleNetrw()
-				\ | endif
-	"----------------------------------------------- Close if last oppened file
-	autocmd bufenter * if (winnr("$") == 1 && &filetype =~ 'netrw') | q | endif
-augroup END
-"==============================================================================
-"------------------------------------------------------------------------------
-"                                                  TERMINAL and RUNNING PROGRAM
-"==============================================================================
+
+
 "______________________________________________________________ TOGGLE TERMINAL
+
 let g:term_buf = 0
 let g:term_win = 0
 function! Term_toggle(width)
@@ -294,11 +294,14 @@ nnoremap <F4> :call Term_toggle(50)<cr>
 tnoremap <F4> <C-\><C-n>:call Term_toggle(50)<cr>
 "------------------------------------------ Leave terminal insert mode with Esc
 tnoremap <Esc> <C-\><C-n>
-"____________________________ RUN PROGRAM WITH :R TOGGLE ERRORLIST WITH SHIFT-E
+
+
+"__________________________________________________________________ RUN PROGRAM
+
 let g:prog_buf = 0
 let g:prog_win = 0
 function! Run_Program(width)
-	"____________________________ disable runing programs in specific filetypes
+	"---------------------------- disable runing programs in specific filetypes
 	if &filetype =~ 'netrw\|markdown\|terminal\|text\|vim'
 		let l:winnr=winnr()
 		if win_gotoid(g:prog_win)
@@ -321,7 +324,7 @@ function! Run_Program(width)
 			endtry
 		endif
 	else
-		"_________________________________________ compilers and compiling path
+		"----------------------------------------- compilers and compiling path
 		if &filetype =~ 'python'
 			let g:Compiler='python3' | let g:ComPath=expand("%:p")
 		elseif &filetype =~ 'java'
@@ -331,7 +334,7 @@ function! Run_Program(width)
 		elseif &filetype =~ 'typescript'
 			let g:Compiler='tsc' | let g:ComPath='--project tsconfig.json'
 		endif
-		"__________________ Toggle errorlist or run program if it doesn't exist
+		"------------------ Toggle errorlist or run program if it doesn't exist
 		let l:winnr=winnr()
 		if win_gotoid(g:prog_win)
 			hide
@@ -368,7 +371,10 @@ command R if g:prog_buf
 			\| call Run_Program(50)
 "------------------------------- Close errorlist if it it the last oppened file
 autocmd bufenter * if (winnr("$") == 1 && &filetype=~'errorlist') | q | endif
-"_________________________________________ open curl cheat sheet in vim with Ch
+
+
+"__________________________________________________________________ CHEAT SHEET
+
 function! CheatSheet(search)
 	let l:winnr = winnr()
 	vertical new
@@ -379,10 +385,18 @@ function! CheatSheet(search)
 	execute l:winnr . 'wincmd p'
 endfunction
 command! -nargs=+ -complete=command Ch call CheatSheet(<args>)
+
+
 "==============================================================================
 "------------------------------------------------------------------------------
 "                                                                     FORMATING
 "==============================================================================
+
+
+set tabstop=4 softtabstop=4 "set tab width
+set shiftwidth=4
+set smartindent "smart indent the new line
+
 let g:formaters = {
 			\'javascript': 'prettier',
 			\'typescript': 'prettier',
@@ -431,38 +445,21 @@ function! Formate()
 	normal g'z
 endfunction
 nnoremap <silent><leader>f :call Formate()<CR>
-"==============================================================================
-"------------------------------------------------------------------------------
-"                                                    PARENTHESES AUTOCOMPLETION
-"==============================================================================
-inoremap " ""<left>
-inoremap "" "
-inoremap ' ''<left>
-inoremap '' '
-inoremap ` ``<left>
-inoremap `` `
-inoremap ( ()<left>
-inoremap (<cr> (<cr>)<Esc>O
-inoremap (( (
-inoremap () ()
-inoremap [ []<left>
-inoremap [<cr> [<cr>]<Esc>O
-inoremap [[ [
-inoremap [] []
-inoremap { {}<left>
-inoremap {<cr> {<cr>}<Esc>O
-inoremap {{ {
-inoremap {} {}
-"_________________________________ prevent highlight errors from delayed parens
-let g:loaded_matchparen=1
+
+
 "==============================================================================
 "------------------------------------------------------------------------------
 "                                                                      SNIPPETS
 "==============================================================================
+
+
 "----------------------------------------- match java class name with file name
 command! CTF let g:text=expand('%:t') |
 			\normal cw<C-r>=g:text<CR><Esc>diwhx
+
+
 "________________________________________________________________ java snippets
+
 let g:snippets = [ 
 			\[',jm', 'main.java', 'o'],
 			\[',jis', 'intToString.java', '6wli'],
@@ -480,17 +477,124 @@ endfor
 command! Snippets for snippet in g:snippets |
 			\ echo ''.snippet[0].'  -->  '.snippet[1].'' |
 			\ endfor
+
+
+"==============================================================================
+"------------------------------------------------------------------------------
+"                                                                           LSP
+"==============================================================================
+
+
+lua require'lspconfig'.tsserver.setup{
+			\on_attach=require'completion'.on_attach
+			\}
+"Install tsserver with :LspInstall tsserver
+lua require'lspconfig'.jsonls.setup{
+			\on_attach=require'completion'.on_attach
+			\}
+"Install json language server with :LspInstall jsonls
+lua require'lspconfig'.pyls.setup{
+			\on_attach=require'completion'.on_attach
+			\}
+"Install python language server with :!pip install python-language-server
+lua require'lspconfig'.jdtls.setup{
+			\on_attach=require'completion'.on_attach
+			\}
+"Install java language server with :LspInstall jdtls
+
+
+"_________________________________________________________________ AUTOCOMPLETE
+
+set shortmess+=c "Don't give ins-completion-menu messages
+set completeopt=menuone "Show completion popup with only one match
+set completeopt+=noinsert,noselect "Dont atuo insert words
+
+"--------------------------------------------------- Scroll popup down with TAB
+inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<TAB>"
+"--------------------------------------------------- Scroll popup up with S-TAB
+inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<TAB>"
+"------------------------------------------------------------ Select with enter
+inoremap <expr><CR> pumvisible() ? "<C-y>" : "\<CR>"
+"---------------------------------------------------------- Completion priority
+let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+
+
+"==============================================================================
+"------------------------------------------------------------------------------
+"                                                                         NETRW
+"==============================================================================
+
+
+let g:netrw_banner = 0 "Disable directory preview press "I" to show it
+let g:netrw_liststyle = 3 "Tree appearance
+let g:netrw_browse_split = 4 "Open file on the right of the file browser
+let g:netrw_winsize = 15 "Size of netrw window
+let g:NetrwIsOpen = 0 "netrw oppened or not
+let g:netrw_altv=1 "Open slits to the right
+
+
+"___________________________________________________ TOGGLE NETRW with Ctrl - n
+
+function! ToggleNetrw()
+	if g:NetrwIsOpen
+		let i = bufnr("$")
+		while (i >= 1)
+			if (getbufvar(i, "&filetype") == "netrw")
+				silent exe "bwipeout " . i
+			endif
+			let i -= 1
+		endwhile
+		let g:NetrwIsOpen=0
+	else
+		let g:NetrwIsOpen=1
+		silent Lexplore
+	endif
+endfunction
+map <silent><C-n> :call ToggleNetrw()<CR>
+
+
+"____________________________________________ Toggle netrw off on opening files
+
+function! CloseEmptyFile()
+	if g:NetrwIsOpen
+		let i = bufnr("$")
+		while (i >= 1)
+			if (getbufvar(i, "&filetype") == "")
+				silent exe "bwipeout " . i
+			endif
+			let i -= 1
+		endwhile
+	endif
+endfunction
+augroup Netrw
+	"-------------------------------------- Open netrw when opening directories
+	autocmd VimEnter * call ToggleNetrw()
+	"-------------------------------------- Don't open netrw when opening files
+	autocmd VimEnter *.* call ToggleNetrw()
+	"------------------------------------------------- Close empty file on open
+	autocmd VimEnter * call CloseEmptyFile()
+	"---------------------------------------------- Toggle off on opening files
+	autocmd BufWinEnter *.*\|TODO\|./* if g:NetrwIsOpen
+				\ | call ToggleNetrw()
+				\ | endif
+	"----------------------------------------------- Close if last oppened file
+	autocmd bufenter * if (winnr("$") == 1 && &filetype =~ 'netrw') | q | endif
+augroup END
+
+
 "==============================================================================
 "------------------------------------------------------------------------------
 "                                                                   END OF FILE
 "==============================================================================
-autocmd BufEnter init.vim nnoremap ,1 :/^"\s* BASIC BEHAVIOUR<CR>zz:<BS>
-autocmd BufEnter init.vim nnoremap ,2 :/^"\s* PLUGGINS<CR>zt:<BS>
-autocmd BufEnter init.vim nnoremap ,3 :/^"\s* COLORS<CR>zt:<BS>
-autocmd BufEnter init.vim nnoremap ,4 :/^"\s* STATUSLINE<CR>zt:<BS>
-autocmd BufEnter init.vim nnoremap ,5 :/^"\s* NETRW<CR>zt:<BS>
-autocmd BufEnter init.vim nnoremap ,6 :/^"\s* TERMINAL<CR>zt:<BS>
-autocmd BufEnter init.vim nnoremap ,7 :/^"\s* FORMATING<CR>zt:<BS>
-autocmd BufEnter init.vim nnoremap ,8 :/^"\s* PARENTHESES<CR>zt:<BS>
-autocmd BufEnter init.vim nnoremap ,9 :/^"\s* SNIPPETS<CR>zt:<BS>
+
+
+autocmd BufEnter init.vim nnoremap ,1 :/^"\s* BASIC BEHAVIOUR<CR>zt:<BS>
+autocmd BufEnter init.vim nnoremap ,2 :/^"\s* UI<CR>zt:<BS>
+autocmd BufEnter init.vim nnoremap ,3 :/^"\s* TERMINAL<CR>zt:<BS>
+autocmd BufEnter init.vim nnoremap ,4 :/^"\s* FORMATING<CR>zt:<BS>
+autocmd BufEnter init.vim nnoremap ,5 :/^"\s* SNIPPETS<CR>zt:<BS>
+autocmd BufEnter init.vim nnoremap ,6 :/^"\s* LSP<CR>zt:<BS>
+autocmd BufEnter init.vim nnoremap ,7 :/^"\s* NETRW<CR>zt:<BS>
+autocmd BufEnter init.vim nnoremap ,8 gg
+autocmd BufEnter init.vim nnoremap ,9 gg
 autocmd BufEnter init.vim nnoremap ,0 gg
