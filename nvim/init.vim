@@ -22,7 +22,7 @@
 
 "TERMINAL ______________ ,3
 
-
+" - specific compilers
 " - toggle terminal
 " - run program
 
@@ -56,6 +56,7 @@
 
 syntax on
 filetype plugin indent on
+let g:nvimpath = stdpath('config') "path to nvim directory
 set exrc
 set noerrorbells "Disable error sounds
 set noswapfile "Load buffers without creating swap files
@@ -68,7 +69,7 @@ set timeoutlen=500 "Shorten timeout for key combinations
 "------------------------------------------------------------------ SAVE / UNDO
 set nobackup "Do not automatically save
 set undofile "Allow undo after reoppening the file
-set undodir=~/.config/nvim/undo "undo directory
+execute 'set undodir='.g:nvimpath.'/undo'
 
 
 "_____________________________________________________________________ MAPPINGS
@@ -298,48 +299,25 @@ tnoremap <Esc> <C-\><C-n>
 
 "__________________________________________________________________ RUN PROGRAM
 
+let g:compilers = {
+			\'python': ['python3', "%:p"],
+			\'java': ['javac', "%:p"],
+			\'javascript': ['node', "%:p"],
+			\'typescript': ['tsc', '--project tsconfig.json'],
+			\}
 let g:prog_buf = 0
 let g:prog_win = 0
 function! Run_Program(width)
-	"---------------------------- disable runing programs in specific filetypes
-	if &filetype =~ 'netrw\|markdown\|terminal\|text\|vim'
+	"----------------- Toggle errorlist or run program if it doesn't exist
+	if has_key(g:compilers, &filetype)
 		let l:winnr=winnr()
 		if win_gotoid(g:prog_win)
 			hide
 			execute l:winnr . "wincmd p"
 		else
-			vertical new
-			exec "vertical resize " . a:width
-			try
-				exec "buffer " . g:prog_buf
-				let g:prog_buf = bufnr("")
-				let g:prog_win = win_getid()
-				set winfixwidth
-				normal G
-				execute l:winnr . "wincmd p"
-			catch
-				q
-				echo("Cannot run program in this filetype!")
-				execute l:winnr . "wincmd p"
-			endtry
-		endif
-	else
-		"----------------------------------------- compilers and compiling path
-		if &filetype =~ 'python'
-			let g:Compiler='python3' | let g:ComPath=expand("%:p")
-		elseif &filetype =~ 'java'
-			let g:Compiler='javac' | let g:ComPath=expand("%:p")
-		elseif &filetype =~ 'javascript'
-			let g:Compiler='node' | let g:ComPath=expand("%:p")
-		elseif &filetype =~ 'typescript'
-			let g:Compiler='tsc' | let g:ComPath='--project tsconfig.json'
-		endif
-		"------------------ Toggle errorlist or run program if it doesn't exist
-		let l:winnr=winnr()
-		if win_gotoid(g:prog_win)
-			hide
-			execute l:winnr . "wincmd p"
-		else
+			silent w
+			let l:compiler = g:compilers[&filetype][0]
+			let l:path = expand(g:compilers[&filetype][1])
 			vertical new
 			exec "vertical resize " . a:width
 			try
@@ -349,7 +327,7 @@ function! Run_Program(width)
 				set winfixwidth
 				normal G
 			catch
-				call termopen(''.g:Compiler.' '.g:ComPath.'', {"detach": 0})
+				call termopen(''.l:compiler.' '.l:path.'', {"detach": 0})
 				set filetype=errorlist
 				let g:prog_buf = bufnr("")
 				let g:prog_win = win_getid()
@@ -358,6 +336,8 @@ function! Run_Program(width)
 			endtry
 			execute l:winnr . "wincmd p"
 		endif
+	else 
+		echo('Compiling is not set for this filetype.')
 	endif
 endfunction
 "---------------------------------------------- Toggle errorlist with SHIFT - E
@@ -367,7 +347,6 @@ tnoremap <silent><S-e> :call Run_Program(50)<cr>
 command R if g:prog_buf
 			\| silent! execute 'bwipeout! '.g:prog_buf
 			\| endif
-			\| w
 			\| call Run_Program(50)
 "------------------------------- Close errorlist if it it the last oppened file
 autocmd bufenter * if (winnr("$") == 1 && &filetype=~'errorlist') | q | endif
@@ -400,49 +379,50 @@ set smartindent "smart indent the new line
 let g:formaters = {
 			\'javascript': 'prettier',
 			\'typescript': 'prettier',
-			\'python': 'autopep8' 
+			\'python': 'black' 
 			\}
 function! Formate()
-	normal wmz
+	silent w	
+	normal mz
 	if has_key(g:formaters, &filetype)
-		if &filetype =~ 'typescript\|javascript'
-			try
+		try 
+			if &filetype =~ 'typescript\|javascript'
 				execute 'setlocal equalprg='.g:formaters[&filetype].'
 							\\ --use-tabs\ --stdin-filepath\ %'
-				silent execute "normal gg=G"
-				execute 'setlocal equalprg=""'
-			finally
-				if stridx(getline('.'),
-							\ ''.g:formaters[&filetype].': command not found')
-							\ != -1
-					silent undo
-					execute "normal gg=G"
-					echo 'Could not format with '.g:formaters[&filetype].''
-				else
-					echo 'formated with '.g:formaters[&filetype].''
-				endif
-			endtry
-		else
-			try 
+			else
 				execute 'setlocal equalprg='.g:formaters[&filetype].'\ -'
-				silent execute "normal gggqG"
-				execute 'setlocal equalprg=""'
-			finally
-				if stridx(getline('.'),
-							\ ''.g:formaters[&filetype].': command not found')
-							\ != -1
-					silent undo
-					execute "normal gg=G"
-					echo 'Could not format with '.g:formaters[&filetype].''
-				else
-					echo 'formated with '.g:formaters[&filetype].''
-				endif
-			endtry
-		endif
+			endif
+			let l:lines = line('$')
+			silent execute "normal gg=G"
+			execute 'setlocal equalprg=""'
+		finally
+			if stridx(getline('.'),
+						\ ''.g:formaters[&filetype].': command not found')
+						\ != -1
+				silent undo
+				execute "normal gg=G"
+				echo 'Could not format with '.g:formaters[&filetype].''
+			elseif stridx(getline('.'), 
+						\ 'error')
+						\ != -1
+				let l:err = getline('.')
+				silent undo
+				echo l:err
+			elseif stridx(getline(l:lines + 1),
+						\ 'error')
+						\ != -1
+				let l:err = getline(l:lines + 1)
+				silent undo
+				echo l:err
+			else
+				echo 'formated with '.g:formaters[&filetype].''
+			endif
+		endtry
 	else
 		execute "normal gg=G"
 	endif
 	normal g'z
+	silent w
 endfunction
 nnoremap <silent><leader>f :call Formate()<CR>
 
@@ -470,7 +450,7 @@ let g:snippets = [
 			\]
 for snippet in g:snippets  
 	execute 'nnoremap '.snippet[0].'
-				\ :-1read ~/.config/nvim/snippets/'.snippet[1].'<CR>
+				\ :-1read '.g:nvimpath.'/snippets/'.snippet[1].'<CR>
 				\'.snippet[2].' <esc>:echo "snippet: '.snippet[1].'"<CR>'
 endfor
 "----------------------------------- show all availible snippets with :Snippets

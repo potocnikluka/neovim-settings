@@ -1,5 +1,4 @@
 # Neovim settings
-My preffered linux neovim settings.
 
 Neovim (https://github.com/neovim/neovim) is an ambitious vim-fork, trying to modernize vim. 
 It provides better plugin API than vim, better codebase and a great community. 
@@ -10,7 +9,7 @@ Lately it has also been providing great features sooner than vim.
 * git
 
 ## Configuration
-* Replace local nvim folder (~/.config/nvim) with the folder from these settings
+* Replace local nvim folder (~/.config/nvim for linux) with the folder from these settings
 * in nvim run command ```:PlugInstall``` and restart the editor
 * see Details for more on LSP and Snippets configuration
 
@@ -61,7 +60,9 @@ You can easily create your own snippets with these settings:
 
 * Toggle terminal with "F4".
 * In editor, type ```:R``` to asynchronously run the program in the side split. Toggle the terminal running the program with "Shift + e", if there is no nothing running "Shift - e" will run the program.
-	- Set up compilers and compiling paths to suit your needs in init.vim under TERMINAL.
+	- Set up "g:compilers" dictionary to suit your needss in init.vim under TERMINAL:
+
+	```let g:compilers = {'filetype': ['compiler', 'path']}```
 
 * Format current file with ",f".
 	- By default formating will only indent the whole file.
