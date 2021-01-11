@@ -1,8 +1,7 @@
 # Neovim settings
 
 Neovim (https://github.com/neovim/neovim) is an ambitious vim-fork, trying to modernize vim. 
-It provides better plugin API than vim, better codebase and a great community. 
-Lately it has also been providing great features sooner than vim.
+It provides a better plugin API than vim, better codebase, a great community and some very useful features. 
 
 ## Prerequisites
 * neovim v0.5
