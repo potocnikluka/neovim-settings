@@ -16,6 +16,11 @@ lua require'lspconfig'.jdtls.setup{
 			\on_attach=require'completion'.on_attach
 			\}
 "Install java language server with :LspInstall jdtls
+lua require'lspconfig'.clangd.setup{
+			\on_attach=require'completion'.on_attach
+			\}
+"Install clangd(c,cpp,objc,objcpp) https://clangd.llvm.org/installation.html
+
 "-------------------------------------------------------------- lsp keybindings
 "jump to definition
 noremap <silent>gd :lua vim.lsp.buf.definition()<CR>

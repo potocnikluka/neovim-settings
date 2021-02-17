@@ -14,6 +14,8 @@ command! CTF let g:text=expand('%:t') |
 let g:snippets = [ 
 			\['<leader>jm',
 			\ 'main.java', 'o'],
+			\['<leader>jcp',
+			\ 'comparator.java', 'o'],
 			\['<leader>jcm',
 			\ 'classMain.java', '2w:CTF<CR>jo'],
 			\['<leader>jcms',

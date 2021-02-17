@@ -38,25 +38,39 @@ tnoremap <Esc> <C-\><C-n>
 let g:compilers = {
 			\'python': ['python3', "%:p"],
 			\'java': ['javac', "%:p"],
+			\'c': ['gcc', "%:p", "-o", "%:p:r"],
 			\'javascript': ['node', "%:p"],
 			\'typescript': ['tsc', '--project tsconfig.json'],
 			\}
+let g:runners = {
+			\'java': ['java', "%:p"],
+			\'c': ['', "%:p:r"],
+			\}
 let g:prog_buf = 0
 let g:prog_win = 0
-function! Run_Program(width)
+function! Run_Program(dict, args, type)
 
-	"----------------- Toggle errorlist or run program if it doesn't exist
-	if has_key(g:compilers, &filetype)
+	"---------------------- Toggle errorlist or run program if it doesn't exist
+	if has_key(a:dict, &filetype)
 		let l:winnr=winnr()
 		if win_gotoid(g:prog_win)
 			hide
 			execute l:winnr . "wincmd p"
 		else
 			silent w
-			let l:compiler = g:compilers[&filetype][0]
-			let l:path = expand(g:compilers[&filetype][1])
+			let l:compiler = a:dict[&filetype][0]
+			let l:path = expand(a:dict[&filetype][1])
+			if len(a:dict[&filetype]) == 3
+				let l:path = ''.expand(a:dict[&filetype][1]).'
+							\ '.a:dict[&filetype][2].''
+			endif
+			if len(a:dict[&filetype]) == 4
+				let l:path = ''.expand(a:dict[&filetype][1]).'
+							\ '.a:dict[&filetype][2].'
+							\ '.expand(a:dict[&filetype][3]).''
+			endif
 			vertical new errorlist
-			exec "vertical resize " . a:width
+			exec "vertical resize 50"
 			try
 				exec "buffer " . g:prog_buf
 				let g:prog_buf = bufnr("")
@@ -64,7 +78,15 @@ function! Run_Program(width)
 				set winfixwidth
 				normal G
 			catch
-				call termopen(''.l:compiler.' '.l:path.'', {"detach": 0})
+				let l:compArgs = ''
+				let l:runArgs = a:args
+				if !has_key(g:runners, &filetype)
+					let l:compArgs = a:args
+				endif
+				call termopen(''.l:compiler.' '.l:path.' '.l:compArgs.'', {
+							\"detach": 0,
+							\ "on_exit": {->End(a:type, l:runArgs)}
+							\})
 				set filetype=errorlist
 				let g:prog_buf = bufnr("")
 				let g:prog_win = win_getid()
@@ -78,15 +100,26 @@ function! Run_Program(width)
 	endif
 endfunction
 
+function! End(type, args)
+	if getbufline(g:prog_buf, 0, 2) == ['', '']
+		"---------------------- If filetype in runners run prog after compiling
+		if has_key(g:runners, &filetype) && a:type == 'c'
+			silent! execute 'bwipeout! '.g:prog_buf
+			call Run_Program(g:runners, a:args, 'r')
+		endif
+	endif
+endfunction
+
 "---------------------------------------------- Toggle errorlist with SHIFT - E
-nnoremap <silent><S-e> :call Run_Program(50)<cr>
-tnoremap <silent><S-e> :call Run_Program(50)<cr>
+nnoremap <silent><S-e> :call Run_Program(g:compilers, '', 'c')<cr>
+tnoremap <silent><S-e> :call Run_Program(g:compilers, '', 'c')<cr>
 
 "----------------------------------- Run program with :R, replace one if exists
-command R if g:prog_buf
+"allow arguments such as > input.txt
+command -nargs=* R if g:prog_buf
 			\| silent! execute 'bwipeout! '.g:prog_buf
 			\| endif
-			\| call Run_Program(50)
+			\| call Run_Program(g:compilers, <q-args>, 'c')
 
 "------------------------------- Close errorlist if it it the last oppened file
 autocmd bufenter * if (winnr("$") == 1 && &filetype=~'errorlist') | q | endif
@@ -103,4 +136,4 @@ function! CheatSheet(search)
 	set winfixwidth
 	execute l:winnr . 'wincmd p'
 endfunction
-command! -nargs=+ -complete=command Ch call CheatSheet(<args>)
+command! -nargs=* -complete=command Ch call CheatSheet(<q-args>)

@@ -1,9 +1,10 @@
+let g:nvimpath = stdpath('config') "path to nvim directory
 "==============================================================================
 "------------------------------------------------------------------------------
-"                                                                     PLUGGINS
+"                                                                       PLUGINS
 "==============================================================================
 
-call plug#begin()
+call plug#begin(''.g:nvimpath.'/plugged')
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 call plug#end()
@@ -16,7 +17,6 @@ call plug#end()
 
 syntax on
 filetype plugin indent on
-let g:nvimpath = stdpath('config') "path to nvim directory
 set exrc "use project's local nvim config file if exists
 set noerrorbells "Disable error sounds
 set updatetime=50 "Shorten updatetime from 4s to 50ms
