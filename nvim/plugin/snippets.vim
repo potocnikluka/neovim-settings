@@ -12,7 +12,7 @@ command! CTF let g:text=expand('%:t') |
 "________________________________________________________________ java snippets
 
 let g:snippets = [ 
-			\['<leader>cm', 'mainStdio.c', '2jo'],
+			\['<leader>cm', 'mainStdio.c', '3jo'],
 			\['<leader>jcm',
 			\ 'classMain.java', '2w:CTF<CR>jo'],
 			\['<leader>jcms',

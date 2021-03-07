@@ -186,6 +186,9 @@ autocmd bufenter * if (winnr("$") == 1 && &filetype=~'errorlist') | q | endif
 "__________________________________________________________________ CHEAT SHEET
 
 function! CheatSheet(search)
+	if !executable('curl')
+		return
+	endif
 	let l:winnr = winnr()
 	vertical new
 	vertical resize 80

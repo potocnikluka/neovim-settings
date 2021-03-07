@@ -3,12 +3,18 @@
 "                                                                     FORMATING
 "==============================================================================
 
-"Define formatters for filetypes and settings 
+set tabstop=4 softtabstop=4 "set tab width
+set shiftwidth=4
+set smartindent "smart indent the new line
+
+
+"Define formaters for filetypes and settings 
 let g:formaters = {
 			\'javascript': [ 'prettier', '\ --use-tabs\ --stdin-filepath\ %'],
 			\'typescript': [ 'prettier', '\ --use-tabs\ --stdin-filepath\ %'],
 			\'python': ['autopep8', '\ -'],
 			\}
+
 "save and format
 function! Format()
 	if &filetype =~ 'markdown\|text\|netrw\|nerdtree' 

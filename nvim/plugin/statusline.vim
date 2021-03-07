@@ -59,9 +59,9 @@ set guitablabel=\ %t\ %M\ %N
 "--------------------------------------------------------- highlight statusline
 highlight statusline cterm=bold ctermbg=246 ctermfg=234
 			\ guibg=#a89984 guifg=#1d2021 gui=bold
-highlight User1 ctermfg=007 ctermbg=239 guibg=#595048 guifg=#ebdbb2
-highlight User2 ctermfg=007 ctermbg=236 guibg=#47403c guifg=#ebdbb2
-highlight User3 ctermfg=007 ctermbg=236 guibg=#32302f guifg=#ebdbb2
+highlight User1 ctermfg=250 ctermbg=239 guibg=#595048 guifg=#ebdbb2
+highlight User2 ctermfg=250 ctermbg=236 guibg=#47403c guifg=#ebdbb2
+highlight User3 ctermfg=250 ctermbg=236 guibg=#32302f guifg=#ebdbb2
 highlight clear statuslineNC
 highlight statuslineNC ctermfg=239 ctermbg=239 guibg=#504945 guifg=#1d2021
 

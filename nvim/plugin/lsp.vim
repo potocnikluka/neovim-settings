@@ -29,8 +29,11 @@ noremap <silent>gd :lua vim.lsp.buf.definition()<CR>
 "show info of word under cursor in popup
 noremap <silent>K :lua vim.lsp.buf.hover()<CR>
 
-
 "_________________________________________________________________ AUTOCOMPLETE
+
+set shortmess+=c "Don't give ins-completion-menu messages
+set completeopt=menuone "Show completion popup with only one match
+set completeopt+=noinsert,noselect "Dont atuo insert words
 
 "--------------------------------------------------- Scroll popup down with TAB
 inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<TAB>"
