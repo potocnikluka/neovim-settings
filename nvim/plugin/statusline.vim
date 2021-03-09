@@ -41,6 +41,7 @@ set statusline+=%0*\ %{toupper(g:currentmode[mode()])}
 set statusline+=\ %1*\ %<%F%m%r%h%w
 set statusline+=\ %2*\ %Y
 set statusline+=\ %3*
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
 set statusline+=%=
 set statusline+=%2*\ col:\ %02v
 set statusline+=\ ln:\ %02l/%L

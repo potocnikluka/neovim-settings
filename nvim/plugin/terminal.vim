@@ -38,7 +38,7 @@ tnoremap <Esc> <C-\><C-n>
 let g:compilers = {
 			\'python': ['python3', "%:p"],
 			\'java': ['javac', "%:p"],
-			\'c': ['gcc', "%:p", "-o", "%:p:r"],
+			\'c': ['gcc', "%:p", "-o", "%:p:r", '-std=c99 -Wall -pedantic'],
 			\'cs': ['csc', "%:p"],
 			\'javascript': ['node', "%:p"],
 			\'typescript': ['tsc', '--project tsconfig.json'],
@@ -46,6 +46,7 @@ let g:compilers = {
 let g:runners = {
 			\'java': ['java', "%:p"],
 			\'c': ["%:p:r"],
+			\'cs': ["mono", "%:p:r.exe"]
 			\}
 let g:prog_buf = 0
 let g:prog_win = 0
@@ -161,7 +162,12 @@ function AddToCommand(command, dict, filetype)
 	for i in range(len(a:dict[a:filetype]))
 		let l:c = a:dict[a:filetype][i]
 		if l:c[0] == '%'
-			let l:c = expand(l:c)	
+			if stridx(l:c, '.') != -1
+				let l:c = split(''.l:c.'', '\.')
+				let l:c = ''.expand(l:c[0]).'.'.l:c[1].''
+			else
+				let l:c = expand(l:c)
+			endif
 		endif
 		let l:command = ''.l:command.' '.l:c.''
 	endfor

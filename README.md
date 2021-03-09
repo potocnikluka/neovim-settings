@@ -18,7 +18,7 @@ Therefore, I have included some basic settings in the init.vim file and split ot
 
 See [details](DETAILS.md) for more information on the specific setting.
 
-### Pluggins:
+### Pluggins
 * nvim-lspconfig (https://github.com/neovim/nvim-lspconfig) - collection of common configurations for LSP.
 * Completion-nvim (https://github.com/nvim-lua/completion-nvim) - auto completion framework for a better completion experience with LSP.
 

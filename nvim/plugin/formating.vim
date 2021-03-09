@@ -8,7 +8,7 @@ set shiftwidth=4
 set smartindent "smart indent the new line
 
 
-"Define formaters for filetypes and settings 
+"Define formatters for filetypes and settings 
 let g:formaters = {
 			\'javascript': [ 'prettier', '\ --use-tabs\ --stdin-filepath\ %'],
 			\'typescript': [ 'prettier', '\ --use-tabs\ --stdin-filepath\ %'],
@@ -22,7 +22,7 @@ function! Format()
 	endif
 	silent w	
 	"set mark z
-	normal mz
+	silent normal mz
 	if has_key(g:formaters, &filetype)
 		"check if formater can be executed
 		if !executable(g:formaters[&filetype][0])
@@ -36,7 +36,6 @@ function! Format()
 						\'.g:formaters[&filetype][1].''
 			silent execute "normal gg=G"
 			execute 'setlocal equalprg=""'
-		finally "undo and use the default indenting if error occurs
 			if stridx(getline('.'), 
 						\ 'error')
 						\ != -1
@@ -46,12 +45,24 @@ function! Format()
 			else
 				echo 'formated with '.g:formaters[&filetype][0].''
 			endif
+		catch
+			try 
+				silent undo
+				execute "normal gg=G"
+				echo 'Could not format with '.g:formaters[&filetype][0].'
+							\, using default indenting.'
+				return 
+			catch
+				silent undo
+				echo 'Could not format.'
+				return
+			endtry
 		endtry
 	else
 		execute "normal gg=G"
 	endif
 	"return to mark and don't remember jump
-	normal g'z
+	silent normal g'z
 	silent w
 endfunction
 
