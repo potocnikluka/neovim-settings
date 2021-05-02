@@ -7,6 +7,18 @@
 " To change default settings or change compiler, execute or interpreter for a
 " filetype, add variables to 'init.vim' under 'VARIABLES'.
 "
+" Adding arguments to Run_program():
+"	 'arg'  -> adds 'arg' when executing
+"	 'arg;arg2' -> adds 'arg' when compiling, 'arg2' when executing
+"
+" Add arguments to the top of the file to avoid typing arguments every time
+" you run the program:
+"
+"	`// compile -> arguments`
+"	`// execute -> arguments`
+"
+"	** '//' can be replaced with any type of comment
+"
 " All remappings are in 'remappings.vim'.
 " _____________________________________________________________________________
 
@@ -74,7 +86,7 @@ function! Run_program(args)
 	let txt = ''
 	for i in split(cmd, "")
 		if len(i) > 20 && matchstr(i, "/") != ""
-			let i = '.../' . split(i, "/")[-1]
+			let i = split(i, "/")[-1]
 		endif
 		if txt == '' && i != ''
 			let txt = i
@@ -106,18 +118,32 @@ function! Build_command(interpreter, compiler, execute, args)
 			let cmd = Add_to_command(cmd, a:interpreter)
 		elseif a:compiler != ''
 			let cmd = Add_to_command(cmd, a:compiler)
+			for i in [1, 2]
+				let x = getline(i)
+				if x =~ 'compile -> '
+					let cmd = cmd . Arg_constants(x)
+				endif
+			endfor
 		endif
-		"add arguments with '-'
-		let cmd = Add_arguments(cmd, a:args, '-')
 		if a:execute != ''
+			let cmd = Add_arguments(cmd, a:args, 0)
 			let cmd = cmd . '  && ' . Add_to_command('', a:execute)
+			let cmd = Add_arguments(cmd, a:args, 1)
+		else
+			let cmd = Add_arguments(cmd, a:args, 2)
 		endif
-		"add other arguments
-		let cmd = Add_arguments(cmd, a:args, '')
+		if a:execute != '' || a:interpreter != ''
+			for i in [1, 2]
+				let x = getline(i)
+				if x =~ 'execute -> '
+					let cmd = cmd . Arg_constants(x)
+				endif
+			endfor
+		endif
 	catch
 		return ''
 	endtry
-		return cmd
+	return cmd
 endfunction
 
 "---------------------------------------------------------Add  parts to command
@@ -151,18 +177,45 @@ endfunction
 "---------------------------------------------------- Add  arguments to command
 function! Add_arguments(cmd, args, type)
 	let cmd = a:cmd
-	for i in split(a:args, " ")
-		if a:type == '-' 
-			if i[0] == '-'
-				let cmd = cmd . " " . i
-			endif
-		else
-			if i[0] != '-'
-				let cmd = cmd . " " . i
-			endif
+	if len(a:args) < 1
+		return cmd
+	endif
+	let args = split(a:args . ' ', ';')
+	if a:type == 0
+		if len(args) < 2
+			return cmd
 		endif
-	endfor
+		let cmd = cmd . ' ' . args[0]
+	elseif a:type == 1
+		if len(args) < 2
+			let cmd = cmd . ' ' . args[0]
+		else
+			let cmd = cmd . ' ' . args[1]
+		endif
+	else
+		let cmd = cmd . ' ' .  a:args
+	endif
 	return cmd
+endfunction
+
+function! Arg_constants(cur_line)
+	try
+		let x = split(split(a:cur_line, ' -> ')[1], ' ')
+		let j = 0
+		for i in x
+			if i[0] == '.' && i[1] == '/'
+				let x[j] =  expand('%:p:h') . '/' .  substitute(i, '\.\/', '', '')
+			elseif i[0] == '.' && i[1] == '.' && i[2] == '/'
+				let path = '%:p:h' . repeat(':h', count(i, '../'))
+				let x[j] = expand(path).'/' .
+							\ substitute(i, '\.\.\/', '', '')
+			endif
+			let j = j + 1
+		endfor
+		return ' ' . join(x, ' ')
+	catch
+		return ''
+	endtry
 endfunction
 
 "--------------------------------------------------------------Toggle errorlist
