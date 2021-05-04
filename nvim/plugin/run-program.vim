@@ -206,9 +206,13 @@ function! Arg_constants(cur_line)
 			if i[0] == '.' && i[1] == '/'
 				let x[j] =  expand('%:p:h') . '/' .  substitute(i, '\.\/', '', '')
 			elseif i[0] == '.' && i[1] == '.' && i[2] == '/'
-				let path = '%:p:h' . repeat(':h', count(i, '../'))
-				let x[j] = expand(path).'/' .
-							\ substitute(i, '\.\.\/', '', '')
+				let c = count(i, '../')
+				let path = '%:p:h' . repeat(':h', c)
+				while c > 0
+					let i = substitute(i, '\.\.\/', '', '')
+					let c = c - 1
+				endwhile
+				let x[j] = expand(path).'/' . i
 			endif
 			let j = j + 1
 		endfor
